@@ -1,11 +1,17 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const DataStore = require('nedb');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const cors = require('cors');
+const withAuth = require('./middleware');
 
 const app = express();
-const port = 3000;
+const port = 3001;
 const db = new DataStore({ filename: 'database.db', autoload: true });
+const key = 'supersecret';
 
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -21,15 +27,57 @@ app.post('/api/v1/register', (req, res) => {
     res.status(500).json({
       message: 'please input valid username and password',
     });
+  } else {
+    bcrypt.hash(password, 10, (error, encrypted) => {
+      if (error) {
+        res.status(500).json(error);
+      } else {
+        db.insert({ username, password: encrypted }, (err, document) => {
+          if (err) {
+            res.status(500).json(err);
+          } else {
+            res.status(201).json({
+              message: 'welcome to the club',
+              data: document,
+            });
+          }
+        });
+      }
+    });
   }
-  db.insert({ username, password }, (err, result) => {
+});
+
+app.post('/api/v1/login', (req, res) => {
+  const { username, password } = req.body;
+  db.findOne({ username }, (err, document) => {
     if (err) {
       res.status(500).json(err);
+    } else {
+      bcrypt.compare(password, document.password, (error, same) => {
+        if (error) {
+          res.status(500).json(error);
+        } else {
+          const token = jwt.sign({ username }, key, {
+            expiresIn: '1m',
+          });
+          res.cookie('token', token, { httpOnly: true }).sendStatus(200);
+        }
+      });
     }
-    res.status(201).json({
-      message: 'welcome to the club',
-      data: result,
-    });
+  });
+});
+
+app.get('/tes', (req, res) => {
+  res
+    .cookie('tes', 'tes')
+    .status(200)
+    .send('oke');
+});
+
+app.get('/check', withAuth, (req, res) => {
+  console.log(req.data);
+  res.json({
+    message: 'ok',
   });
 });
 

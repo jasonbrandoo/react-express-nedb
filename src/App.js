@@ -1,26 +1,37 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import styled from 'styled-components';
+import Navbar from './components/Navbar';
+import Home from './components/Home';
+import Footer from './components/Footer';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const Root = styled.div`
+  background-color: #282c34;
+  min-height: 100vh;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  color: white;
+`;
+
+const Container = styled.div`
+  flex: 1 0 auto;
+  width: 75%;
+  margin: 0 auto;
+`;
+
+const App = () => (
+  <BrowserRouter>
+    <Root>
+      <Navbar />
+      <Container>
+        <Switch>
+          <Route exact path="/" component={Home} />
+        </Switch>
+      </Container>
+      <Footer />
+    </Root>
+  </BrowserRouter>
+);
 
 export default App;
