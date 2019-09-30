@@ -7,7 +7,7 @@ const StyledNavbar = styled.nav`
   display: flex;
   align-items: center;
   height: 5rem;
-  border-bottom: 1px solid blue;
+  border-bottom: 1px solid #09d3ac;
 `;
 
 const StyledLink = styled(NavLink)`
