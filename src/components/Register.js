@@ -58,18 +58,23 @@ function Register() {
   async function handleSubmit(e) {
     e.preventDefault();
     if (form.password !== form.confirm) {
-      setError(!error);
+      setError(true);
     } else {
-      const post = await axios.post(
-        'http://localhost:3001/api/v1/register',
-        form,
-      );
-      if (post.status === 201) {
-        history.push('/', {
-          message: 'Your account has been created now you can login',
-        });
-      } else {
-        alert('error');
+      try {
+        const post = await axios.post(
+          'http://localhost:3001/api/v1/register',
+          form,
+        );
+        if (post.status === 201) {
+          history.push('/', {
+            message: 'Your account has been created now you can login',
+          });
+        } else {
+          setError(true);
+        }
+      } catch (err) {
+        console.warn(err);
+        setError(true);
       }
     }
   }

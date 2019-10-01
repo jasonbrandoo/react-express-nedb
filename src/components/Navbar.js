@@ -14,18 +14,17 @@ const StyledLink = styled(NavLink)`
   text-decoration: none;
   margin: 0 1rem;
   color: #09d3ac;
-  font-size: 2rem;
 `;
 
 const StyledImg = styled.img`
   width: 5%;
+  margin: 0 1rem;
 `;
 
 const Navbar = () => (
   <StyledNavbar>
-    <StyledLink to="/">
-      <StyledImg src={logo} alt="logo" />
-    </StyledLink>
+    <StyledImg src={logo} alt="logo" />
+    <StyledLink to="/">Home</StyledLink>
     <StyledLink to="/register">Register</StyledLink>
     <StyledLink to="/login">Login</StyledLink>
     <StyledLink to="/secret">Secret</StyledLink>

@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import { UserContext } from '../utils/UserContext';
 
 const StyledBox = styled.div`
   border: 1px solid #09d3ac;
@@ -45,6 +46,7 @@ function Login() {
     password: '',
   });
   const [error, setError] = React.useState(false);
+  const { setLogin } = React.useContext(UserContext);
   const history = useHistory();
 
   function handleInput(e) {
@@ -56,13 +58,23 @@ function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const post = await axios.post('http://localhost:3001/api/v1/login', form, {
-      withCredentials: true,
-    });
-    if (post.status === 200) {
-      history.push('/');
-    } else {
-      setError(!error);
+    try {
+      const post = await axios.post(
+        'http://localhost:3001/api/v1/login',
+        form,
+        {
+          withCredentials: true,
+        },
+      );
+      if (post.status === 200) {
+        setLogin(true);
+        history.push('/');
+      } else {
+        setError(true);
+      }
+    } catch (err) {
+      console.error(err);
+      setError(true);
     }
   }
 

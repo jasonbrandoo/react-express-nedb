@@ -52,6 +52,8 @@ app.post('/api/v1/login', (req, res) => {
   db.findOne({ username }, (err, document) => {
     if (err) {
       res.status(500).json(err);
+    } else if (document === null) {
+      res.status(500).json({ message: 'password error' });
     } else {
       bcrypt.compare(password, document.password, (error, same) => {
         if (error) {
@@ -65,13 +67,6 @@ app.post('/api/v1/login', (req, res) => {
       });
     }
   });
-});
-
-app.get('/tes', (req, res) => {
-  res
-    .cookie('tes', 'tes')
-    .status(200)
-    .send('oke');
 });
 
 app.get('/api/v1/check', withAuth, (req, res) => {
