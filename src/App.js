@@ -6,6 +6,9 @@ import Home from './components/Home';
 import Footer from './components/Footer';
 import Login from './components/Login';
 import Register from './components/Register';
+import { UserProvider } from './utils/UserContext';
+import Secret from './components/Secret';
+import ProtectedRoute from './utils/ProtectedRoute';
 
 const Root = styled.div`
   background-color: #282c34;
@@ -25,15 +28,18 @@ const Container = styled.div`
 const App = () => (
   <BrowserRouter>
     <Root>
-      <Navbar />
-      <Container>
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route path="/login" component={Login} />
-          <Route path="/register" component={Register} />
-        </Switch>
-      </Container>
-      <Footer />
+      <UserProvider>
+        <Navbar />
+        <Container>
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route path="/login" component={Login} />
+            <Route path="/register" component={Register} />
+            <ProtectedRoute path="/secret" component={Secret} />
+          </Switch>
+        </Container>
+        <Footer />
+      </UserProvider>
     </Root>
   </BrowserRouter>
 );

@@ -23,7 +23,9 @@ const StyledImg = styled.img`
 
 const Navbar = () => (
   <StyledNavbar>
-    <StyledImg src={logo} alt="logo" />
+    <StyledLink to="/">
+      <StyledImg src={logo} alt="logo" />
+    </StyledLink>
     <StyledLink to="/register">Register</StyledLink>
     <StyledLink to="/login">Login</StyledLink>
     <StyledLink to="/secret">Secret</StyledLink>

@@ -74,11 +74,8 @@ app.get('/tes', (req, res) => {
     .send('oke');
 });
 
-app.get('/check', withAuth, (req, res) => {
-  console.log(req.data);
-  res.json({
-    message: 'ok',
-  });
+app.get('/api/v1/check', withAuth, (req, res) => {
+  res.sendStatus(200);
 });
 
 app.listen(process.env.port || port, () => {

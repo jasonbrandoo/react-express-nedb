@@ -1,5 +1,8 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 const StyledBox = styled.div`
   border: 1px solid #09d3ac;
@@ -29,17 +32,65 @@ const StyledButton = styled.button`
   color: #09d3ac;
 `;
 
-const Login = () => (
-  <StyledBox>
-    <StyledForm>
-      <h1 style={{ marginTop: 0 }}>Login</h1>
-      <label htmlFor="username">Username</label>
-      <StyledInput type="text" id="username" />
-      <label htmlFor="password">Password</label>
-      <StyledInput type="password" id="password" />
-      <StyledButton type="button">Login</StyledButton>
-    </StyledForm>
-  </StyledBox>
-);
+const StyledError = styled.div`
+  padding: 1rem;
+  border: 1px solid red;
+  border-radius: 5px
+  color: #09d3ac;
+`;
+
+function Login() {
+  const [form, setForm] = React.useState({
+    username: '',
+    password: '',
+  });
+  const [error, setError] = React.useState(false);
+  const history = useHistory();
+
+  function handleInput(e) {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const post = await axios.post('http://localhost:3001/api/v1/login', form, {
+      withCredentials: true,
+    });
+    if (post.status === 200) {
+      history.push('/');
+    } else {
+      setError(!error);
+    }
+  }
+
+  return (
+    <StyledBox>
+      {error && <StyledError>Error</StyledError>}
+      <StyledForm onSubmit={handleSubmit}>
+        <h1 style={{ marginTop: 0 }}>Login</h1>
+        <label htmlFor="username">Username</label>
+        <StyledInput
+          type="text"
+          id="username"
+          name="username"
+          onChange={handleInput}
+          value={form.username}
+        />
+        <label htmlFor="password">Password</label>
+        <StyledInput
+          type="password"
+          id="password"
+          name="password"
+          onChange={handleInput}
+          value={form.password}
+        />
+        <StyledButton type="submit">Login</StyledButton>
+      </StyledForm>
+    </StyledBox>
+  );
+}
 
 export default Login;

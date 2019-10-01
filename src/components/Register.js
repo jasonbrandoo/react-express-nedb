@@ -32,33 +32,38 @@ const StyledButton = styled.button`
   color: #09d3ac;
 `;
 
-const Register = () => {
+const StyledError = styled.div`
+  padding: 1rem;
+  border: 1px solid red;
+  border-radius: 5px
+  color: #09d3ac;
+`;
+
+function Register() {
   const [form, setForm] = React.useState({
     username: '',
     password: '',
     confirm: '',
   });
+  const [error, setError] = React.useState(false);
   const history = useHistory();
-  const handleInput = (e) => {
+
+  function handleInput(e) {
     setForm({
       ...form,
       [e.target.name]: e.target.value,
     });
-  };
-  const handleSubmit = async (e) => {
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault();
     if (form.password !== form.confirm) {
-      alert('no');
+      setError(!error);
     } else {
       const post = await axios.post(
         'http://localhost:3001/api/v1/register',
         form,
       );
-      setForm({
-        username: '',
-        password: '',
-        confirm: '',
-      });
       if (post.status === 201) {
         history.push('/', {
           message: 'Your account has been created now you can login',
@@ -67,9 +72,11 @@ const Register = () => {
         alert('error');
       }
     }
-  };
+  }
+
   return (
     <StyledBox>
+      {error && <StyledError>Error</StyledError>}
       <StyledForm onSubmit={handleSubmit}>
         <h1 style={{ marginTop: 0 }}>Register</h1>
         <label htmlFor="username">Username</label>
@@ -100,6 +107,6 @@ const Register = () => {
       </StyledForm>
     </StyledBox>
   );
-};
+}
 
 export default Register;
