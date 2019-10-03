@@ -35,6 +35,7 @@ const StyledButton = styled.button`
 
 const StyledError = styled.div`
   padding: 1rem;
+  margin-bottom: 1rem;
   border: 1px solid red;
   border-radius: 5px
   color: #09d3ac;
@@ -46,6 +47,7 @@ function Login() {
     password: '',
   });
   const [error, setError] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState('');
   const { setLogin } = React.useContext(UserContext);
   const history = useHistory();
 
@@ -69,18 +71,17 @@ function Login() {
       if (post.status === 200) {
         setLogin(true);
         history.push('/');
-      } else {
-        setError(true);
       }
     } catch (err) {
-      console.error(err);
+      console.error(err.message);
       setError(true);
+      setErrorMessage('user not found');
     }
   }
 
   return (
     <StyledBox>
-      {error && <StyledError>Error</StyledError>}
+      {error && <StyledError>{errorMessage}</StyledError>}
       <StyledForm onSubmit={handleSubmit}>
         <h1 style={{ marginTop: 0 }}>Login</h1>
         <label htmlFor="username">Username</label>

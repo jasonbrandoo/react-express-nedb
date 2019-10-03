@@ -34,6 +34,7 @@ const StyledButton = styled.button`
 
 const StyledError = styled.div`
   padding: 1rem;
+  margin-bottom: 1rem;
   border: 1px solid red;
   border-radius: 5px
   color: #09d3ac;
@@ -46,6 +47,7 @@ function Register() {
     confirm: '',
   });
   const [error, setError] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState('');
   const history = useHistory();
 
   function handleInput(e) {
@@ -59,6 +61,7 @@ function Register() {
     e.preventDefault();
     if (form.password !== form.confirm) {
       setError(true);
+      setErrorMessage('Password not match');
     } else {
       try {
         const post = await axios.post(
@@ -69,19 +72,18 @@ function Register() {
           history.push('/', {
             message: 'Your account has been created now you can login',
           });
-        } else {
-          setError(true);
         }
       } catch (err) {
-        console.warn(err);
+        console.error(err.message);
         setError(true);
+        setErrorMessage('Please try again');
       }
     }
   }
 
   return (
     <StyledBox>
-      {error && <StyledError>Error</StyledError>}
+      {error && <StyledError>{errorMessage}</StyledError>}
       <StyledForm onSubmit={handleSubmit}>
         <h1 style={{ marginTop: 0 }}>Register</h1>
         <label htmlFor="username">Username</label>

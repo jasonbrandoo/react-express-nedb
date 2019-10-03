@@ -51,14 +51,15 @@ app.post('/api/v1/login', (req, res) => {
   const { username, password } = req.body;
   db.findOne({ username }, (err, document) => {
     if (err) {
-      res.status(500).json(err);
+      res.sendStatus(500);
     } else if (document === null) {
-      res.status(500).json({ message: 'password error' });
+      res.sendStatus(500);
     } else {
       bcrypt.compare(password, document.password, (error, same) => {
         if (error) {
-          res.status(500).json(error);
-        } else {
+          res.sendStatus(500);
+        }
+        if (same) {
           const token = jwt.sign({ username }, key, {
             expiresIn: '1m',
           });
@@ -67,6 +68,11 @@ app.post('/api/v1/login', (req, res) => {
       });
     }
   });
+});
+
+app.get('/api/v1/logout', (req, res) => {
+  res.clearCookie('token');
+  res.sendStatus(200);
 });
 
 app.get('/api/v1/check', withAuth, (req, res) => {
