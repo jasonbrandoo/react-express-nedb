@@ -1,68 +1,38 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[![first-timers-only](https://img.shields.io/badge/first--timers--only-friendly-blue.svg?style=flat-square)](https://www.firsttimersonly.com/)
 
-## Available Scripts
+## **React App with Express and NeDB**
 
-In the project directory, you can run:
+Just simple React app with express as backend and NeDB as database.
 
-### `npm start`
+## **How to use**
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+1. **Clone the project** `git clone https://github.com/jasonbrandoo/react-auth.git`
+2. **Go to server folder** `cd react-auth/server`
+3. **Install depedencies for express** `npm install`
+4. **Go back to root folder** `cd ..`
+5. **Install depedencies for react** `npm install`
+6. **Run the server and client** `npm run server & npm start`
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+## **Script**
 
-### `npm test`
+`npm run server`
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Runs the express server
 
-### `npm run build`
+`npm start`
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Runs the app on development mode
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+`npm run lint`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Runs eslint on src/ folder
 
-### `npm run eject`
+## **Route**
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+**POST** `http://localhost:3001/api/v1/register` (Register)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+**POST** `http://localhost:3001/api/v1/login` (Login)
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+**GET** `http://localhost:3001/api/v1/check` (Check token)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+**GET** `http://localhost:3001/api/v1/register` (Logout)

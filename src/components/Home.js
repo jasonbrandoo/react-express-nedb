@@ -5,11 +5,16 @@ function Home() {
   const { state } = useLocation();
   const [message, setMessage] = React.useState(state);
 
-  if (state) {
-    setTimeout(() => {
+  React.useEffect(() => {
+    if (state) {
+      setTimeout(() => {
+        setMessage('');
+      }, 5000);
+    }
+    return () => {
       setMessage('');
-    }, 5000);
-  }
+    };
+  }, [state]);
 
   return (
     <div>

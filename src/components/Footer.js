@@ -10,6 +10,6 @@ const StyledFooter = styled.div`
   color: #09d3ac;
 `;
 
-const Footer = () => <StyledFooter>Footer</StyledFooter>;
+const Footer = () => <StyledFooter />;
 
 export default Footer;
