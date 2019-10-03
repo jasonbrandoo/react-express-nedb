@@ -6,8 +6,8 @@ import Home from './components/Home';
 import Footer from './components/Footer';
 import Login from './components/Login';
 import Register from './components/Register';
-import { UserProvider } from './utils/UserContext';
 import Secret from './components/Secret';
+import { UserProvider } from './utils/UserContext';
 import ProtectedRoute from './utils/ProtectedRoute';
 
 const Root = styled.div`
