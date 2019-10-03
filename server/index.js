@@ -24,17 +24,15 @@ app.get('/api/v1/', (req, res) => {
 app.post('/api/v1/register', (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
-    res.status(500).json({
-      message: 'please input valid username and password',
-    });
+    res.sendStatus(500);
   } else {
     bcrypt.hash(password, 10, (error, encrypted) => {
       if (error) {
-        res.status(500).json(error);
+        res.sendStatus(500);
       } else {
         db.insert({ username, password: encrypted }, (err, document) => {
           if (err) {
-            res.status(500).json(err);
+            res.sendStatus(500);
           } else {
             res.status(201).json({
               message: 'welcome to the club',
