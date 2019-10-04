@@ -35,21 +35,28 @@ app.post('/api/v1/register', [
     return res.status(400).json(errors.array({ onlyFirstError: true }));
   } else {
     const { username, password } = req.body;
-    bcrypt.hash(password, 10, (error, encrypted) => {
-      if (error) {
-        res.sendStatus(500);
-      } else {
-        db.insert({ username, password: encrypted }, (err, document) => {
-          if (err) {
-            res.sendStatus(500);
-          } else {
-            res.status(201).json({
-              message: 'welcome to the club',
-              data: document,
-            });
-          }
-        });
+    // Check if username already exists.
+    db.findOne({ username }, (err, doc) => {
+      if (doc) {
+        return res.status(400).json({ msg: 'Username already exists', param: 'username' });
       }
+
+      bcrypt.hash(password, 10, (error, encrypted) => {
+        if (error) {
+          res.sendStatus(500);
+        } else {
+          db.insert({ username, password: encrypted }, (err, document) => {
+            if (err) {
+              res.sendStatus(500);
+            } else {
+              res.status(201).json({
+                message: 'welcome to the club',
+                data: document,
+              });
+            }
+          });
+        }
+      });
     });
   }
 });
