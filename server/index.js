@@ -4,6 +4,7 @@ const DataStore = require('nedb');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const { check, validationResult } = require('express-validator');
 const withAuth = require('./middleware');
 
 const app = express();
@@ -21,26 +22,41 @@ app.get('/api/v1/', (req, res) => {
   });
 });
 
-app.post('/api/v1/register', (req, res) => {
-  const { username, password } = req.body;
-  if (!username || !password) {
-    res.sendStatus(500);
+app.post('/api/v1/register', [
+  check('username').exists().withMessage('No username provided'),
+  check('username').not().isEmpty().withMessage('Username should not be empty'),
+  check('password').exists().withMessage('No password provided'),
+  check('password').isLength({ min: 8 }).withMessage('Password should be at least 8 chars long')
+], (req, res) => {
+  // Just show the parameter name and the error message.
+  const errorFormatter = ({ msg, param }) => ({ msg, param });
+  const errors = validationResult(req).formatWith(errorFormatter);
+  if (!errors.isEmpty()) {
+    return res.status(400).json(errors.array({ onlyFirstError: true }));
   } else {
-    bcrypt.hash(password, 10, (error, encrypted) => {
-      if (error) {
-        res.sendStatus(500);
-      } else {
-        db.insert({ username, password: encrypted }, (err, document) => {
-          if (err) {
-            res.sendStatus(500);
-          } else {
-            res.status(201).json({
-              message: 'welcome to the club',
-              data: document,
-            });
-          }
-        });
+    const { username, password } = req.body;
+    // Check if username already exists.
+    db.findOne({ username }, (err, doc) => {
+      if (doc) {
+        return res.status(400).json({ msg: 'Username already exists', param: 'username' });
       }
+
+      bcrypt.hash(password, 10, (error, encrypted) => {
+        if (error) {
+          res.sendStatus(500);
+        } else {
+          db.insert({ username, password: encrypted }, (err, document) => {
+            if (err) {
+              res.sendStatus(500);
+            } else {
+              res.status(201).json({
+                message: 'welcome to the club',
+                data: document,
+              });
+            }
+          });
+        }
+      });
     });
   }
 });
