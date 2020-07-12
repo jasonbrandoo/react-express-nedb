@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../logo.svg';
-import { UserContext } from '../utils/UserContext';
+import useToken from '../utils/useToken';
 
 const StyledNavbar = styled.nav`
   display: flex;
@@ -35,7 +35,8 @@ const RightSide = styled.div`
 `;
 
 function Navbar() {
-  const { login } = React.useContext(UserContext);
+  const { status, setStatus } = useToken('status');
+  console.log(status);
 
   async function logOut() {
     try {
@@ -43,7 +44,8 @@ function Navbar() {
         withCredentials: true,
       });
       if (res.status === 200) {
-        window.location.href = '/';
+        window.location = '/';
+        setStatus('logged-out');
       }
     } catch (error) {
       console.error(error.message);
@@ -54,9 +56,9 @@ function Navbar() {
     <StyledNavbar>
       <StyledImg src={logo} alt="logo" />
       <StyledLink to="/">Home</StyledLink>
-      {login && <StyledLink to="/secret">Secret</StyledLink>}
+      {status === 'logged-in' && <StyledLink to="/secret">Secret</StyledLink>}
       <RightSide>
-        {login ? (
+        {status === 'logged-in' ? (
           <StyledLogOut onClick={logOut}>Logout</StyledLogOut>
         ) : (
           <>

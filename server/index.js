@@ -12,6 +12,22 @@ const port = 3001;
 const db = new DataStore({ filename: 'database.db', autoload: true });
 const key = 'supersecret';
 
+const validator = [
+  check('username')
+    .exists()
+    .withMessage('No username provided'),
+  check('username')
+    .not()
+    .isEmpty()
+    .withMessage('Username should not be empty'),
+  check('password')
+    .exists()
+    .withMessage('No password provided'),
+  check('password')
+    .isLength({ min: 8 })
+    .withMessage('Password should be at least 8 chars long'),
+];
+
 app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(express.json());
 app.use(cookieParser());
@@ -22,25 +38,25 @@ app.get('/api/v1/', (req, res) => {
   });
 });
 
-app.post('/api/v1/register', [
-  check('username').exists().withMessage('No username provided'),
-  check('username').not().isEmpty().withMessage('Username should not be empty'),
-  check('password').exists().withMessage('No password provided'),
-  check('password').isLength({ min: 8 }).withMessage('Password should be at least 8 chars long')
-], (req, res) => {
+app.post('/api/v1/register', validator, (req, res) => {
   // Just show the parameter name and the error message.
   const errorFormatter = ({ msg, param }) => ({ msg, param });
   const errors = validationResult(req).formatWith(errorFormatter);
   if (!errors.isEmpty()) {
-    return res.status(400).json(errors.array({ onlyFirstError: true }));
-  } else {
-    const { username, password } = req.body;
-    // Check if username already exists.
-    db.findOne({ username }, (err, doc) => {
-      if (doc) {
-        return res.status(400).json({ msg: 'Username already exists', param: 'username' });
-      }
-
+    res.status(400).json(errors.array({ onlyFirstError: true }));
+  }
+  const { username, password } = req.body;
+  // Check if username already exists.
+  db.findOne({ username }, (err, doc) => {
+    if (err) {
+      res.status(500).json({
+        message: err,
+      });
+    } else if (doc) {
+      res
+        .status(400)
+        .json({ msg: 'Username already exists', param: 'username' });
+    } else {
       bcrypt.hash(password, 10, (error, encrypted) => {
         if (error) {
           res.sendStatus(500);
@@ -57,8 +73,8 @@ app.post('/api/v1/register', [
           });
         }
       });
-    });
-  }
+    }
+  });
 });
 
 app.post('/api/v1/login', (req, res) => {
@@ -77,7 +93,9 @@ app.post('/api/v1/login', (req, res) => {
           const token = jwt.sign({ username }, key, {
             expiresIn: '1m',
           });
-          res.cookie('token', token, { httpOnly: true }).sendStatus(200);
+          res
+            .cookie('token', token, { httpOnly: true, sameSite: 'none' })
+            .sendStatus(200);
         }
       });
     }

@@ -1,38 +1,37 @@
 import React from 'react';
 import axios from 'axios';
-import { UserContext } from './UserContext';
 
-function useToken() {
-  const { login, setLogin } = React.useContext(UserContext);
+function useToken(key) {
+  const [status, setStatus] = React.useState(
+    localStorage.getItem(key) || 'logged-out',
+  );
 
   React.useEffect(() => {
-    let mount = false;
+    localStorage.setItem(key, status);
+  }, [key, status]);
 
+  React.useEffect(() => {
     async function checkToken() {
       try {
         const post = await axios.get('http://localhost:3001/api/v1/check', {
           withCredentials: true,
         });
         if (post.status === 200) {
-          setLogin(true);
+          setStatus('logged-in');
         } else {
-          setLogin(false);
+          setStatus('logged-out');
         }
       } catch (error) {
-        setLogin(false);
+        setStatus('logged-out');
       }
     }
 
-    if (!mount) {
+    if (status === 'logged-in') {
       checkToken();
     }
+  }, [status]);
 
-    return () => {
-      mount = true;
-    };
-  }, [setLogin]);
-
-  return login;
+  return { status, setStatus };
 }
 
 export default useToken;

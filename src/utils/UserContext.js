@@ -1,15 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import useToken from './useToken';
 
 export const UserContext = React.createContext();
 
 export function UserProvider({ children }) {
-  const [login, setLogin] = React.useState(false);
+  const { status } = useToken('status');
 
   return (
-    <UserContext.Provider value={{ login, setLogin }}>
-      {children}
-    </UserContext.Provider>
+    <UserContext.Provider value={{ status }}>{children}</UserContext.Provider>
   );
 }
 

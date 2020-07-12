@@ -2,8 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
-import { UserContext } from '../utils/UserContext';
+import useToken from '../utils/useToken';
 
 const StyledBox = styled.div`
   border: 1px solid #09d3ac;
@@ -48,8 +47,7 @@ function Login() {
   });
   const [error, setError] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState('');
-  const { setLogin } = React.useContext(UserContext);
-  const history = useHistory();
+  const { setStatus } = useToken('status');
 
   function handleInput(e) {
     setForm({
@@ -69,8 +67,8 @@ function Login() {
         },
       );
       if (post.status === 200) {
-        setLogin(true);
-        history.push('/');
+        setStatus('logged-in');
+        window.location = '/';
       }
     } catch (err) {
       console.error(err.message);
