@@ -8,6 +8,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Secret from './components/Secret';
 import { UserProvider } from './utils/UserContext';
+import ProtectedRoute from './utils/ProtectedRoute';
 
 const Root = styled.div`
   background-color: #282c34;
@@ -34,7 +35,7 @@ const App = () => (
             <Route exact path="/" component={Home} />
             <Route path="/login" component={Login} />
             <Route path="/register" component={Register} />
-            <Route path="/secret" component={Secret} />
+            <ProtectedRoute path="/secret" component={Secret} />
           </Switch>
         </Container>
         <Footer />
