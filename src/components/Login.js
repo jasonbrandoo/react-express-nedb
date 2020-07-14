@@ -71,9 +71,8 @@ function Login() {
         window.location = '/';
       }
     } catch (err) {
-      console.error(err.message);
       setError(true);
-      setErrorMessage('user not found');
+      setErrorMessage(err.response.data.message);
     }
   }
 

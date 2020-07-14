@@ -74,9 +74,8 @@ function Register() {
           });
         }
       } catch (err) {
-        console.error(err.message);
         setError(true);
-        setErrorMessage('Please try again');
+        setErrorMessage(err.response.data.message);
       }
     }
   }

@@ -1,14 +1,10 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch } from 'react-router-dom';
 import styled from 'styled-components';
-import Navbar from './components/Navbar';
-import Home from './components/Home';
-import Footer from './components/Footer';
-import Login from './components/Login';
-import Register from './components/Register';
-import Secret from './components/Secret';
+import { webRoutes, Route } from './route';
+import { Navbar, Footer } from './components';
 import { UserProvider } from './utils/UserContext';
-import ProtectedRoute from './utils/ProtectedRoute';
 
 const Root = styled.div`
   background-color: #282c34;
@@ -32,10 +28,9 @@ const App = () => (
         <Navbar />
         <Container>
           <Switch>
-            <Route exact path="/" component={Home} />
-            <Route path="/login" component={Login} />
-            <Route path="/register" component={Register} />
-            <ProtectedRoute path="/secret" component={Secret} />
+            {webRoutes.map(route => (
+              <Route key={route.label} {...route} />
+            ))}
           </Switch>
         </Container>
         <Footer />
