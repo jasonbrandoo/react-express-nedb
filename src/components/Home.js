@@ -1,24 +1,8 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 
 function Home() {
-  const { state } = useLocation();
-  const [message, setMessage] = React.useState(state);
-
-  React.useEffect(() => {
-    if (state) {
-      setTimeout(() => {
-        setMessage('');
-      }, 5000);
-    }
-    return () => {
-      setMessage('');
-    };
-  }, [state]);
-
   return (
     <div>
-      {state && <p>{message.message}</p>}
       <h1>Welcome</h1>
       <p>
         Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius aliquam

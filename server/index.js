@@ -66,7 +66,7 @@ app.post('/api/v1/register', validator, (req, res) => {
               } else {
                 res.status(201).json({
                   message: 'welcome to the club',
-                  data: document,
+                  data: document.username,
                 });
               }
             });
@@ -89,16 +89,20 @@ app.post('/api/v1/login', (req, res) => {
     } else {
       bcrypt.compare(password, document.password, (error, same) => {
         if (error) {
-          console.log('bcrypt', error);
           res.sendStatus(500);
         }
         if (same) {
-          const token = jwt.sign({ username }, key, {
+          const token = jwt.sign({ id: document._id }, key, {
             expiresIn: '1m',
           });
-          res
-            .cookie('token', token, { httpOnly: true, sameSite: 'none' })
-            .sendStatus(200);
+          res.cookie('token', token, {
+            httpOnly: true,
+            sameSite: 'none',
+            secure: false,
+          });
+          res.status(200).json({
+            message: 'Login success',
+          });
         }
       });
     }
@@ -111,7 +115,16 @@ app.get('/api/v1/logout', (req, res) => {
 });
 
 app.get('/api/v1/check', withAuth, (req, res) => {
-  res.sendStatus(200);
+  const { id } = req.data;
+  db.findOne({ _id: id }, (err, document) => {
+    if (err) {
+      res.status(500).json(err);
+    } else {
+      res.status(200).json({
+        data: document.username,
+      });
+    }
+  });
 });
 
 app.listen(process.env.port || port, () => {

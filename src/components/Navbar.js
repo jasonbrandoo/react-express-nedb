@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../logo.svg';
-import useToken from '../utils/useToken';
+import { UserContext } from '../utils/UserContext';
 
 const StyledNavbar = styled.nav`
   display: flex;
@@ -35,8 +35,8 @@ const RightSide = styled.div`
 `;
 
 function Navbar() {
-  const { status, setStatus } = useToken('status');
-  console.log(status);
+  const { status, setStatus } = React.useContext(UserContext);
+  let menu;
 
   async function logOut() {
     try {
@@ -44,31 +44,39 @@ function Navbar() {
         withCredentials: true,
       });
       if (res.status === 200) {
-        window.location = '/';
         setStatus('logged-out');
+        window.location = '/';
       }
     } catch (error) {
-      console.error(error.message);
+      console.error(error.response.data);
     }
   }
 
-  return (
-    <StyledNavbar>
-      <StyledImg src={logo} alt="logo" />
-      <StyledLink to="/">Home</StyledLink>
-      {status === 'logged-in' && <StyledLink to="/secret">Secret</StyledLink>}
-      <RightSide>
-        {status === 'logged-in' ? (
+  if (status === 'logged-in') {
+    menu = (
+      <StyledNavbar>
+        <StyledImg src={logo} alt="logo" />
+        <StyledLink to="/">Home</StyledLink>
+        <StyledLink to="/secret">Secret</StyledLink>
+        <RightSide>
           <StyledLogOut onClick={logOut}>Logout</StyledLogOut>
-        ) : (
-          <>
-            <StyledLink to="/register">Register</StyledLink>
-            <StyledLink to="/login">Login</StyledLink>
-          </>
-        )}
-      </RightSide>
-    </StyledNavbar>
-  );
+        </RightSide>
+      </StyledNavbar>
+    );
+  } else {
+    menu = (
+      <StyledNavbar>
+        <StyledImg src={logo} alt="logo" />
+        <StyledLink to="/">Home</StyledLink>
+        <RightSide>
+          <StyledLink to="/register">Register</StyledLink>
+          <StyledLink to="/login">Login</StyledLink>
+        </RightSide>
+      </StyledNavbar>
+    );
+  }
+
+  return menu;
 }
 
 export default Navbar;

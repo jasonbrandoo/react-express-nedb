@@ -64,11 +64,11 @@ function Register() {
       setErrorMessage('Password not match');
     } else {
       try {
-        const post = await axios.post(
+        const res = await axios.post(
           'http://localhost:3001/api/v1/register',
           form,
         );
-        if (post.status === 201) {
+        if (res.status === 201) {
           history.push('/', {
             message: 'Your account has been created now you can login',
           });

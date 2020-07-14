@@ -22,6 +22,7 @@
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "react/jsx-curly-newline": "off",
+    "react/jsx-one-expression-per-line": "off",
     "no-console": "off"
   }
 }

@@ -5,10 +5,12 @@ import useToken from './useToken';
 export const UserContext = React.createContext();
 
 export function UserProvider({ children }) {
-  const { status } = useToken('status');
+  const { userData, setUserData, status, setStatus } = useToken();
 
   return (
-    <UserContext.Provider value={{ status }}>{children}</UserContext.Provider>
+    <UserContext.Provider value={{ userData, setUserData, status, setStatus }}>
+      {children}
+    </UserContext.Provider>
   );
 }
 

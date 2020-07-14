@@ -1,37 +1,44 @@
 import React from 'react';
 import axios from 'axios';
 
-function useToken(key) {
+function useToken() {
   const [status, setStatus] = React.useState(
-    localStorage.getItem(key) || 'logged-out',
+    localStorage.getItem('status') || 'logged-out',
   );
+  const [userData, setUserData] = React.useState('');
 
   React.useEffect(() => {
-    localStorage.setItem(key, status);
-  }, [key, status]);
+    localStorage.setItem('status', status);
+  }, [status]);
 
   React.useEffect(() => {
     async function checkToken() {
       try {
-        const post = await axios.get('http://localhost:3001/api/v1/check', {
+        const res = await axios.get('http://localhost:3001/api/v1/check', {
           withCredentials: true,
         });
-        if (post.status === 200) {
+        if (res.status === 200) {
           setStatus('logged-in');
+          setUserData(res.data.data);
         } else {
           setStatus('logged-out');
         }
       } catch (error) {
         setStatus('logged-out');
+        window.location.href = '/login';
       }
     }
 
     if (status === 'logged-in') {
       checkToken();
     }
+
+    if (status === 'logged-out') {
+      setUserData('');
+    }
   }, [status]);
 
-  return { status, setStatus };
+  return { status, setStatus, userData, setUserData };
 }
 
 export default useToken;

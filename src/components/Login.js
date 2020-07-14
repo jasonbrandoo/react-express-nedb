@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import useToken from '../utils/useToken';
+import { UserContext } from '../utils/UserContext';
 
 const StyledBox = styled.div`
   border: 1px solid #09d3ac;
@@ -48,6 +49,7 @@ function Login() {
   const [error, setError] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState('');
   const { setStatus } = useToken('status');
+  const { setUserData } = React.useContext(UserContext);
 
   function handleInput(e) {
     setForm({
@@ -59,16 +61,13 @@ function Login() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const post = await axios.post(
-        'http://localhost:3001/api/v1/login',
-        form,
-        {
-          withCredentials: true,
-        },
-      );
-      if (post.status === 200) {
+      const res = await axios.post('http://localhost:3001/api/v1/login', form, {
+        withCredentials: true,
+      });
+      if (res.status === 200) {
         setStatus('logged-in');
-        window.location = '/';
+        setUserData(res.data.data);
+        window.location.href = '/';
       }
     } catch (err) {
       setError(true);
