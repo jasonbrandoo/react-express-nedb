@@ -2,8 +2,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 import useToken from '../utils/useToken';
-import { UserContext } from '../utils/UserContext';
 
 const StyledBox = styled.div`
   border: 1px solid #09d3ac;
@@ -48,8 +48,7 @@ function Login() {
   });
   const [error, setError] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState('');
-  const { setStatus } = useToken('status');
-  const { setUserData } = React.useContext(UserContext);
+  const { status, setStatus } = useToken('status');
 
   function handleInput(e) {
     setForm({
@@ -66,13 +65,16 @@ function Login() {
       });
       if (res.status === 200) {
         setStatus('logged-in');
-        setUserData(res.data.data);
-        window.location.href = '/';
+        window.location.href = '/secret';
       }
     } catch (err) {
       setError(true);
       setErrorMessage(err.response.data.message);
     }
+  }
+
+  if (status === 'logged-in') {
+    return <Redirect to="/" />;
   }
 
   return (

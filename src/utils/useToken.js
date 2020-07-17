@@ -1,11 +1,13 @@
 import React from 'react';
 import axios from 'axios';
+import { UserContext } from './UserContext';
 
 function useToken() {
+  const { setUserData } = React.useContext(UserContext);
   const [status, setStatus] = React.useState(
     localStorage.getItem('status') || 'logged-out',
   );
-  const [userData, setUserData] = React.useState('');
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     localStorage.setItem('status', status);
@@ -19,12 +21,15 @@ function useToken() {
         });
         if (res.status === 200) {
           setStatus('logged-in');
-          setUserData(res.data.data);
-        } else {
-          setStatus('logged-out');
+          setUserData({
+            id: res.data.id,
+            username: res.data.username,
+          });
+          setLoading(false);
         }
       } catch (error) {
         setStatus('logged-out');
+        setLoading(false);
         window.location.href = '/login';
       }
     }
@@ -32,13 +37,9 @@ function useToken() {
     if (status === 'logged-in') {
       checkToken();
     }
+  }, [setUserData, status]);
 
-    if (status === 'logged-out') {
-      setUserData('');
-    }
-  }, [status]);
-
-  return { status, setStatus, userData, setUserData };
+  return { status, setStatus, loading };
 }
 
 export default useToken;

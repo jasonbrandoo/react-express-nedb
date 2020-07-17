@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../logo.svg';
-import { UserContext } from '../utils/UserContext';
+import useToken from '../utils/useToken';
 
 const StyledNavbar = styled.nav`
   display: flex;
@@ -35,7 +35,7 @@ const RightSide = styled.div`
 `;
 
 function Navbar() {
-  const { status, setStatus } = React.useContext(UserContext);
+  const { status, setStatus } = useToken();
   let menu;
 
   async function logOut() {

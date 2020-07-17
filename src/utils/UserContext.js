@@ -1,14 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import useToken from './useToken';
 
 export const UserContext = React.createContext();
 
 export function UserProvider({ children }) {
-  const { userData, setUserData, status, setStatus } = useToken();
+  const [userData, setUserData] = React.useState({
+    id: '',
+    username: '',
+  });
 
   return (
-    <UserContext.Provider value={{ userData, setUserData, status, setStatus }}>
+    <UserContext.Provider value={{ userData, setUserData }}>
       {children}
     </UserContext.Provider>
   );

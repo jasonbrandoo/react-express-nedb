@@ -4,25 +4,23 @@ import { Route as Router, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import useToken from '../utils/useToken';
 
-function PrivateRoute({ children }) {
-  const { status } = useToken('status');
-
-  if (status === 'logged-in') {
-    return children;
-  }
-  return <Redirect to="/login" />;
-}
-
 function Route({ component: Component, auth, ...rest }) {
+  const { status, loading } = useToken();
+
   if (auth) {
     return (
       <Router
         {...rest}
-        render={props => (
-          <PrivateRoute>
+        render={props => {
+          if (loading) {
+            return <p>Loading...</p>;
+          }
+          return status === 'logged-in' ? (
             <Component {...props} />
-          </PrivateRoute>
-        )}
+          ) : (
+            <Redirect to="/login" />
+          );
+        }}
       />
     );
   }
@@ -37,10 +35,6 @@ Route.defaultProps = {
 Route.propTypes = {
   component: PropTypes.func.isRequired,
   auth: PropTypes.bool,
-};
-
-PrivateRoute.propTypes = {
-  children: PropTypes.node.isRequired,
 };
 
 export default Route;

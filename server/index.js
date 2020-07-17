@@ -82,28 +82,36 @@ app.post('/api/v1/login', (req, res) => {
   db.findOne({ username }, (err, document) => {
     if (err) {
       res.sendStatus(500);
-    } else if (document === null) {
-      res.status(404).json({
-        message: 'User not found',
-      });
-    } else {
+    } else if (document) {
       bcrypt.compare(password, document.password, (error, same) => {
         if (error) {
           res.sendStatus(500);
-        }
-        if (same) {
+        } else if (same) {
           const token = jwt.sign({ id: document._id }, key, {
             expiresIn: '1m',
           });
           res.cookie('token', token, {
             httpOnly: true,
             sameSite: 'none',
-            secure: false,
+            secure: process.env.NODE_ENV === 'production',
           });
           res.status(200).json({
-            message: 'Login success',
+            id: document._id,
+            username: document.username,
+          });
+        } else if (!same) {
+          res.status(400).json({
+            message: "Password didn't match",
+          });
+        } else {
+          res.status(400).json({
+            message: error,
           });
         }
+      });
+    } else if (document === null) {
+      res.status(404).json({
+        message: 'User not found',
       });
     }
   });
@@ -121,7 +129,8 @@ app.get('/api/v1/check', withAuth, (req, res) => {
       res.status(500).json(err);
     } else {
       res.status(200).json({
-        data: document.username,
+        id: document._id,
+        username: document.username,
       });
     }
   });
