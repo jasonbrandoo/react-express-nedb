@@ -10,7 +10,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-validator": "^6.6.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "nedb": "^1.8.0",
     "prop-types": "^15.7.2",
     "react": "^16.10.0",
